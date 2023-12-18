@@ -1,7 +1,9 @@
 "use client";
 
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { auth } from "../../../../firebase";
 
 type Inputs = {
   email: string;
@@ -16,7 +18,14 @@ const Register = () => {
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log(data);
+    await createUserWithEmailAndPassword(auth, data.email, data.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+      })
+      .catch((error) => {
+        alert(error);
+      });
   };
 
   return (
