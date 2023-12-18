@@ -1,4 +1,5 @@
 import React from "react";
+import { FaPaperPlane } from "react-icons/fa6";
 
 const Chat = () => {
   return (
@@ -23,6 +24,9 @@ const Chat = () => {
           placeholder="Send a Message"
           className="border-2 rounded w-full pr-10 focus:outline-none p-2"
         />
+        <button className="absolute right-4 flex items-center inset-y-0">
+          <FaPaperPlane />
+        </button>
       </div>
     </div>
   );
