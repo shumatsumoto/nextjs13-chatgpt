@@ -1,23 +1,45 @@
 "use client";
 
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
-import React, { useEffect } from "react";
+import {
+  Timestamp,
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import { IoLogOutOutline } from "react-icons/io5";
 import { db } from "../../../firebase";
 
+type Room = {
+  id: string;
+  name: string;
+  createdAt: Timestamp;
+};
+
 const Sidebar = () => {
+  const [rooms, setRooms] = useState<Room[]>([]);
+
   useEffect(() => {
     const fetchRooms = async () => {
       const roomCollectionRef = collection(db, "rooms");
-      const q = query(roomCollectionRef, orderBy("createdAt"));
+      const q = query(
+        roomCollectionRef,
+        where("userId", "==", ""),
+        orderBy("createdAt")
+      );
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        const newRooms = snapshot.docs.map((doc) => ({
+        const newRooms: Room[] = snapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data(),
+          name: doc.data().name,
+          createdAt: doc.data().createdAt,
         }));
-        console.log(newRooms);
+        setRooms(newRooms);
       });
     };
+
+    fetchRooms();
   }, []);
 
   return (
@@ -28,15 +50,14 @@ const Sidebar = () => {
           <h1 className="text-white text-lg font-semibold p-4">New Chat</h1>
         </div>
         <ul>
-          <li className="cursor-pointer border-b text-slate-100 hover:bg-pink-500">
-            Room1
-          </li>
-          <li className="cursor-pointer border-b text-slate-100 hover:bg-pink-500">
-            Room2
-          </li>
-          <li className="cursor-pointer border-b text-slate-100 hover:bg-pink-500">
-            Room3
-          </li>
+          {rooms.map((room) => (
+            <li
+              key={room.id}
+              className="cursor-pointer border-b text-slate-100 hover:bg-pink-500 py-4"
+            >
+              {room.name}
+            </li>
+          ))}
         </ul>
       </div>
 
