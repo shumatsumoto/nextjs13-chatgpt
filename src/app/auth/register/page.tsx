@@ -4,6 +4,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { auth } from "../../../../firebase";
+import { useRouter } from "next/navigation";
 
 type Inputs = {
   email: string;
@@ -11,6 +12,7 @@ type Inputs = {
 };
 
 const Register = () => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -21,10 +23,14 @@ const Register = () => {
     await createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log(user);
+        router.push("/auth/login");
       })
       .catch((error) => {
-        alert(error);
+        if (error.code === "auth/email-already-in-use") {
+          alert("このメールアドレスはすでに使用されています。");
+        } else {
+          alert(error.message);
+        }
       });
   };
 
