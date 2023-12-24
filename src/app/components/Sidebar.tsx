@@ -37,6 +37,9 @@ const Sidebar = () => {
         }));
         setRooms(newRooms);
       });
+      return () => {
+        unsubscribe();
+      };
     };
 
     fetchRooms();
