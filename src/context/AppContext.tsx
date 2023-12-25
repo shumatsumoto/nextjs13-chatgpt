@@ -1,5 +1,13 @@
+"use client";
+
 import { User, onAuthStateChanged } from "firebase/auth";
-import { ReactNode, createContext, useEffect, useState } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { auth } from "../../firebase";
 
 type AppProviderProps = {
@@ -46,4 +54,8 @@ export function AppProvider({ children }: AppProviderProps) {
       {children}
     </AppContext.Provider>
   );
+}
+
+export function useAppContext() {
+  return useContext(AppContext);
 }
